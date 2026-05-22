@@ -21,7 +21,7 @@ void initlist(seqlist* l){
     if(l->data = NULL)
     return error;
     l->length = 0;
-    l->capacity = init_list;
+    l->capacity = init_size;
 }
 
 void expand(seqlist* l){
