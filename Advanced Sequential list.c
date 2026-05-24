@@ -1,78 +1,122 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#define init_size 100
-#define increment 5
+typedef struct {
+    int* data;      // 存储数据
+    int size;       // 当前元素个数
+    int capacity;   // 当前容量
+} SeqList;
 
-#define ok 1
-#define error 0
+/* 初始化顺序表 */
+void InitList(SeqList* list, int initCapacity)
+{
+    list->data = (int*)malloc(sizeof(int) * initCapacity);
 
-#typedef int elemtype
-#typedef int status
+    if (list->data == NULL)
+    {
+        printf("内存申请失败\n");
+        exit(1);
+    }
 
-typedef struct seqlist{
-    elemtype* data;
-    int length;
-    int capacity;
-}seqlist;
-
-void initlist(seqlist* l){
-    l->data = (elemtype*)malloc(sizeof(elemtype));
-    if(l->data = NULL)
-    return error;
-    l->length = 0;
-    l->capacity = init_size;
+    list->size = 0;
+    list->capacity = initCapacity;
 }
 
-void expand(seqlist* l){
-    elemtype* newdata = (elemtype*)realloc(l->data,(init_size + increment)* (elemtype));
-    if(newdata == NULL){
-        return error;
-    }
-    l->data = newdata;
-    l->length += increment;
+/* 扩容 */
+void ExpandList(SeqList* list)
+{
+    int newCapacity = list->capacity * 2;
+
+    int* newData = (int*)realloc(list->data,
+                                 sizeof(int) * newCapacity);
+
+    if (newData == NULL)
+    {
+        printf("扩容失败\n");
+        exit(1);
     }
 
-int insertlist(seqlist* l,int pos ,elemtype x){
-    if(pos < 1 || pos >= length + 1){
-        if(l->length >= l->capacity && expand(l) == NULL){
-            return error;
-        }
-    }
-    for(int i = l->length;i >= pos;i--){
-    l->data[i] = l->data[i - 1];
-    }
-    l->data[i - 1] = x;
-l->length++;
-return ok;
+    list->data = newData;
+    list->capacity = newCapacity;
+
+    printf("扩容成功，当前容量：%d\n", newCapacity);
 }
 
-int deletelist(seqlist* l,int pos;elemtype* e){
-if(l->length == 0){
-    return error;
+/* 尾插 */
+void PushBack(SeqList* list, int value)
+{
+    // 判断是否需要扩容
+    if (list->size >= list->capacity)
+    {
+        ExpandList(list);
     }
-if(pos < 0 || pos > l->length){
-    return error;
-    }
-for(int i = pos;i < ->length;i++){
-    l->data[i - 1] = l->data[i];
-    }
-*e = l->data[i - 1];
-l->length--;
-return ok;
+
+    list->data[list->size] = value;
+    list->size++;
 }
 
-void printlist(seqlist l){
-for(int i = 0;i <l->length;i++){
-    printf("%d",l->data[i];
+/* 删除指定位置元素 */
+void Erase(SeqList* list, int pos)
+{
+    if (pos < 0 || pos >= list->size)
+    {
+        printf("删除位置非法\n");
+        return;
     }
-printf("\n");
+
+    for (int i = pos; i < list->size - 1; i++)
+    {
+        list->data[i] = list->data[i + 1];
+    }
+
+    list->size--;
 }
 
-int main(){
-seqlist l;
-initlist(&l);
+/* 打印顺序表 */
+void PrintList(SeqList* list)
+{
+    for (int i = 0; i < list->size; i++)
+    {
+        printf("%d ", list->data[i]);
+    }
 
+    printf("\n");
+}
 
-return 0;
+/* 销毁顺序表 */
+void DestroyList(SeqList* list)
+{
+    free(list->data);
+
+    list->data = NULL;
+    list->size = 0;
+    list->capacity = 0;
+}
+
+int main()
+{
+    SeqList list;
+
+    // 初始容量为 3
+    InitList(&list, 3);
+
+    // 插入数据
+    for (int i = 1; i <= 10; i++)
+    {
+        PushBack(&list, i);
+    }
+
+    printf("顺序表内容：\n");
+    PrintList(&list);
+
+    // 删除下标为 2 的元素
+    Erase(&list, 2);
+
+    printf("删除后：\n");
+    PrintList(&list);
+
+    // 释放内存
+    DestroyList(&list);
+
+    return 0;
 }
