@@ -19,12 +19,11 @@ void selectMin(HTNode ht[],int n,int*s1,int*s2){
     *s1 = *s2 = -1;
     for(i = 1;i <= n;i++){
         if(ht[i].parent == 0){
-            if(ht[i].weight < min){
+            if(ht[i].weight < min1){  // 修正：min -> min1
                 min2 = min1;*s2 = *s1;
-                min1 = ht[i].weight;*s = i;
+                min1 = ht[i].weight;*s1 = i;  // 修正：*s -> *s1
             }else if(ht[i].weight < min2){
                 min2 = ht[i].weight;*s2 = i;
-                
             }
         }
     }
@@ -62,48 +61,46 @@ void createHuffmanCode(HTNode ht[],HuffmanCode hc,int n){
         
         while(p != 0){
             if(ht[p].lchild == c)
-            cd[--start] = '0';
+                cd[--start] = '0';
             else
                 cd[--start] = '1';
-                    
-                    c = p;
-                    p = ht[c].parent;
-                }
-                hc[i] = (char*)malloc((n - start)*sizeof(char));
-                strcpy(hc[i],&cd[start]);
-            }
+            
+            c = p;
+            p = ht[c].parent;
         }
-        
-        void preorder(HTNode ht[],int root){
-            if(root == 0)return;
-            printf("%d",ht[root].weight);
-            preorder(ht,ht[root].lchild);
-            preorder(ht,ht[root].rchild);
-        }
-        
-        int main(){
-            int n = 5;
-            int w[6] = {0,5,9,12,13,16};
-            
-            HTNode ht[2*MAX];
-            HUffmanCode hc;
-            
-            for(int i = 1;i <= n;i++){
-                ht[i].weight = w[i];
-                ht[i].parent = ht[i].lchild = ht[i].rchild = 0;
-            }
-            
-            createHuffmanTree(ht,n);
-            createHuffmanCode(ht,hc,n);
-            printf("哈夫曼编码：\n");
-            for(int i = 1;i <= n;i++){
-                printf("权值%d的编码：%s\n",ht[i].weight,hc[i]);
-            }
-            
-            printf("\前序遍历（权值）：\n");
-            preorder(ht,2*n - 1);
-            
-            return 0;
-        }
-        
-  
+        hc[i] = (char*)malloc((n - start)*sizeof(char));
+        strcpy(hc[i],&cd[start]);
+    }
+}
+
+void preorder(HTNode ht[],int root){
+    if(root == 0)return;
+    printf("%d",ht[root].weight);
+    preorder(ht,ht[root].lchild);
+    preorder(ht,ht[root].rchild);
+}
+
+int main(){
+    int n = 5;
+    int w[6] = {0,5,9,12,13,16};
+    
+    HTNode ht[2*MAX];
+    HuffmanCode hc;  // 修正：HUffmanCode -> HuffmanCode
+    
+    for(int i = 1;i <= n;i++){
+        ht[i].weight = w[i];
+        ht[i].parent = ht[i].lchild = ht[i].rchild = 0;
+    }
+    
+    createHuffmanTree(ht,n);
+    createHuffmanCode(ht,hc,n);
+    printf("哈夫曼编码：\n");
+    for(int i = 1;i <= n;i++){
+        printf("权值%d的编码：%s\n",ht[i].weight,hc[i]);
+    }
+    
+    printf("\n前序遍历（权值）：\n");  // 修正：\前 -> \n前
+    preorder(ht,2*n - 1);
+    
+    return 0;
+}
