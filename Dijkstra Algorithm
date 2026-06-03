@@ -1,0 +1,51 @@
+#include <stdio.h>
+
+#define N 100
+#define INF 1000000000
+
+int G[N][N];
+int dist[N];
+int visited[N];
+
+void Dijkstra(int n, int start)
+{
+    for(int i = 0; i < n; i++)
+    {
+        dist[i] = INF;
+        visited[i] = 0;
+    }
+
+    dist[start] = 0;
+
+    for(int i = 0; i < n; i++)
+    {
+        int u = -1;
+        int minDist = INF;
+
+        // 找最小dist
+        for(int j = 0; j < n; j++)
+        {
+            if(!visited[j] && dist[j] < minDist)
+            {
+                minDist = dist[j];
+                u = j;
+            }
+        }
+
+        if(u == -1)
+            break;
+
+        visited[u] = 1;
+
+        // 更新邻居
+        for(int v = 0; v < n; v++)
+        {
+            if(!visited[v] &&
+               G[u][v] != INF &&
+               dist[u] + G[u][v] < dist[v])
+            {
+                dist[v] = dist[u] + G[u][v];
+            }
+        }
+    }
+}
